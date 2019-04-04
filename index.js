@@ -24,6 +24,7 @@ function download (repo, dest, opts, fn) {
   }
   opts = opts || {}
   var clone = opts.clone || false
+  var keepgitfolder = opts.keepgitfolder || false
 
   repo = normalize(repo)
   var url = repo.url || getUrl(repo, clone)
@@ -31,7 +32,9 @@ function download (repo, dest, opts, fn) {
   if (clone) {
     gitclone(url, dest, { checkout: repo.checkout, shallow: repo.checkout === 'master' }, function (err) {
       if (err === undefined) {
-        rm(dest + '/.git')
+        if (!keepgitfolder) {
+          rm(dest + '/.git')
+        }
         fn()
       } else {
         fn(err)
